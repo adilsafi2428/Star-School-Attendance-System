@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star School - Attendance Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --secondary: #1E40AF;
+            --background: #F8FAFC;
+            --text: #1F2937;
+            --success: #10B981;
+            --accent: #6366F1;
+        }
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .login-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hidden { display: none !important; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-secondary {
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .bg-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px);
+            background-size: 50px 50px;
+        }
+    </style>
+</head>
+<body class="min-h-screen" style="background-color: var(--background);">
+    <!-- Navigation Header -->
+    <nav id="navbar" class="glassmorphism shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <i data-feather="book-open" class="h-8 w-8 text-blue-600 mr-3"></i>
+                    <span class="text-xl font-bold" style="color: var(--text);">Star School</span>
+                </div>
+                <div id="userInfo" class="flex items-center space-x-4 hidden">
+                    <span id="welcomeText" class="text-sm font-medium" style="color: var(--text);"></span>
+                    <button id="logoutBtn" class="btn-secondary">
+                        <i data-feather="log-out" class="h-4 w-4 mr-1"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-bg bg-pattern flex items-center justify-center px-4">
+        <div class="login-card max-w-md w-full fade-in">
+            <div class="text-center mb-10">
+                <div class="login-icon floating">
+                    <i data-feather="graduation-cap" class="h-10 w-10 text-white"></i>
+                </div>
+                <h2 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">Star School</h2>
+                <div class="w-16 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mx-auto rounded-full mb-4"></div>
+                <p class="text-gray-600 mt-3 text-lg font-medium">Attendance Management System</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text);">Email Address</label>
+                    <input type="email" id="email" class="input-field" placeholder="Enter your email address" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text);">Password</label>
+                    <input type="password" id="password" class="input-field" placeholder="Enter your password" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text);">Role</label>
+                    <select id="role" class="input-field" required>
+                        <option value="">Select your role</option>
+                        <option value="teacher">Teacher</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full">
+                    <i data-feather="log-in" class="h-4 w-4 mr-2"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <div id="loginError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded hidden"></div>
+
+        </div>
+    </div>
+</body>
+
+<script>
+    // Initialize Feather Icons
+    feather.replace();
+
+    // Application State
+    let currentUser = null;
+    let currentRole = null;
+    let attendanceData = {};
+
+    // Initialize Application
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+        setupEventListeners();
+        setupDemoData();
+    });
+
+    function setupDemoData() {
+        // Always reinitialize with correct credentials
+        localStorage.clear(); // Clear all old data to ensure fresh start
+        
+        // Initialize with demo students
+        const demoStudents = [
+            { id: 'STU001', name: 'Alice Johnson', class: '10', section: 'A', roll: 1 },
+            { id: 'STU002', name: 'Bob Smith', class: '10', section: 'A', roll: 2 },
+            { id: 'STU003', name: 'Carol Davis', class: '10', section: 'A', roll: 3 },
+            { id: 'STU004', name: 'David Wilson', class: '10', section: 'B', roll: 1 },
+            { id: 'STU005', name: 'Emma Brown', class: '11', section: 'A', roll: 1 },
+        ];
+        localStorage.setItem('students', JSON.stringify(demoStudents));
+
+        // Initialize teachers with correct credentials
+        const demoTeachers = [
+            { id: 'TEA001', name: 'Mohmand Teacher', subject: 'All Subjects', email: 'mohmand2428@gmail.com', password: 'atifkhan' }
+        ];
+        localStorage.setItem('teachers', JSON.stringify(demoTeachers));
+
+        // Initialize admins with correct credentials
+        const demoAdmins = [
+            { id: 'ADM001', name: 'Adil Safi', email: 'adilsafi2828@gmail.com', password: 'abas2428' }
+        ];
+        localStorage.setItem('admins', JSON.stringify(demoAdmins));
+
+        // Initialize attendance data
+        localStorage.setItem('attendance', JSON.stringify({}));
+
+        // Initialize classes
+        const defaultClasses = [
+            { name: 'Class 9', code: '9', sections: ['A', 'B', 'C'] },
+            { name: 'Class 10', code: '10', sections: ['A', 'B', 'C'] },
+            { name: 'Class 11', code: '11', sections: ['A', 'B', 'C'] },
+            { name: 'Class 12', code: '12', sections: ['A', 'B', 'C'] },
+            { name: 'Pre-K', code: 'PreK', sections: ['A', 'B'] },
+            { name: 'Kindergarten', code: 'KG', sections: ['A', 'B'] }
+        ];
+        localStorage.setItem('classes', JSON.stringify(defaultClasses));
+    }
+
+    function initializeApp() {
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        const attendanceDateField = document.getElementById('attendanceDate');
+        if (attendanceDateField) {
+            attendanceDateField.value = today;
+        }
+
+        // Check if user is already logged in
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            currentUser = userData.email;
+            currentRole = userData.role;
+            showDashboard(currentRole);
+        } else {
+            showLoginScreen();
+        }
+    }
+
+    function setupEventListeners() {
+        // Login form
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+
+        // Validate credentials
+        if (role === 'admin') {
+            const admins = JSON.parse(localStorage.getItem('admins') || '[]');
+            const admin = admins.find(a => a.email === email && a.password === password);
+            
+            if (admin) {
+                currentUser = email;
+                currentRole = 'admin';
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    role: 'admin',
+                    data: admin
+                }));
+                showDashboard('admin');
+            } else {
+                showError('Invalid admin credentials');
+            }
+        } else if (role === 'teacher') {
+            const teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+            const teacher = teachers.find(t => t.email === email && t.password === password);
+            
+            if (teacher) {
+                currentUser = email;
+                currentRole = 'teacher';
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    role: 'teacher',
+                    data: teacher
+                }));
+                showDashboard('teacher');
+            } else {
+                showError('Invalid teacher credentials');
+            }
+        } else {
+            showError('Please select a valid role');
+        }
+    }
+
+    function handleLogout() {
+        currentUser = null;
+        currentRole = null;
+        localStorage.removeItem('currentUser');
+        showLoginScreen();
+    }
+
+    function showLoginScreen() {
+        // Hide all dashboards
+        const dashboards = ['teacherDashboard', 'adminDashboard'];
+        dashboards.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.classList.add('hidden');
+        });
+        
+        // Show login screen and hide navbar user info
+        document.getElementById('loginScreen').classList.remove('hidden');
+        document.getElementById('userInfo').classList.add('hidden');
+        
+        // Clear form
+        document.getElementById('loginForm').reset();
+        hideError();
+    }
+
+    function showDashboard(role) {
+        // Hide login screen
+        document.getElementById('loginScreen').classList.add('hidden');
+        
+        // Show user info in navbar
+        document.getElementById('userInfo').classList.remove('hidden');
+        
+        // Update welcome text
+        const savedUser = JSON.parse(localStorage.getItem('currentUser'));
+        document.getElementById('welcomeText').textContent = `Welcome, ${savedUser.data.name || currentUser}`;
+
+        // Create and show appropriate dashboard
+        if (role === 'teacher') {
+            showTeacherDashboard();
+        } else if (role === 'admin') {
+            showAdminDashboard();
+        }
+    }
+
+    function showTeacherDashboard() {
+        // Remove existing dashboard if any
+        const existingDashboard = document.getElementById('teacherDashboard');
+        if (existingDashboard) {
+            existingDashboard.remove();
+        }
+
+        // Create teacher dashboard
+        const dashboard = document.createElement('div');
+        dashboard.id = 'teacherDashboard';
+        dashboard.innerHTML = `
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold" style="color: var(--text);">Teacher Dashboard</h1>
+                    <p class="text-gray-600 mt-2">Mark attendance for your students</p>
+                </div>
+
+                <!-- Class Selection -->
+                <div class="card mb-8">
+                    <h3 class="text-xl font-semibold mb-4" style="color: var(--text);">Select Class</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text);">Class</label>
+                            <select id="teacherClassSelect" class="input-field">
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text);">Section</label>
+                            <select id="teacherSectionSelect" class="input-field">
+                                <option value="">Select Section</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text);">Date</label>
+                            <input type="date" id="attendanceDate" class="input-field" required>
+                        </div>
+                    </div>
+                    <button id="loadStudentsBtn" class="btn-primary mt-4">
+                        <i data-feather="users" class="h-4 w-4 mr-2"></i>
+                        Load Students
+                    </button>
+                </div>
+
+                <!-- Attendance Marking -->
+                <div id="attendanceSection" class="card hidden">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-2" style="color: var(--text);">Mark Attendance</h3>
+                        <div id="attendanceInfo" class="text-sm text-gray-600 mb-4">
+                            <!-- Class and date info will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile-friendly student list -->
+                    <div id="studentsList" class="space-y-3 mb-8">
+                        <!-- Students list will be populated here -->
+                    </div>
+                    
+                    <!-- Action buttons at bottom -->
+                    <div class="border-t pt-6 bg-gray-50 -mx-6 px-6 -mb-6 pb-6 rounded-b-xl">
+                        <div class="space-y-3">
+                            <!-- Summary stats -->
+                            <div id="attendanceSummary" class="flex justify-between text-sm bg-white p-3 rounded border">
+                                <span>Present: <span id="presentCount" class="font-semibold text-green-600">0</span></span>
+                                <span>Absent: <span id="absentCount" class="font-semibold text-red-600">0</span></span>
+                                <span>Total: <span id="totalCount" class="font-semibold">0</span></span>
+                            </div>
+                            
+                            <!-- Action buttons -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <button id="markAllPresentBtn" class="btn-secondary w-full">
+                                    <i data-feather="check-circle" class="h-4 w-4 mr-1"></i>
+                                    Mark All Present
+                                </button>
+                                <button id="submitAttendanceBtn" class="btn-primary w-full">
+                                    <i data-feather="save" class="h-4 w-4 mr-1"></i>
+                                    Submit Attendance
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dashboard);
+        
+        // Set today's date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('attendanceDate').value = today;
+        
+        // Setup event listeners
+        document.getElementById('loadStudentsBtn').addEventListener('click', loadStudentsForAttendance);
+        document.getElementById('markAllPresentBtn').addEventListener('click', markAllPresent);
+        document.getElementById('submitAttendanceBtn').addEventListener('click', submitAttendance);
+        document.getElementById('teacherClassSelect').addEventListener('change', loadSections);
+        
+        // Load class options
+        loadClassOptions();
+        
+        feather.replace();
+    }
+
+    function showAdminDashboard() {
+        // Create a simple admin message for now
+        const existingDashboard = document.getElementById('adminDashboard');
+        if (existingDashboard) {
+            existingDashboard.remove();
+        }
+
+        const dashboard = document.createElement('div');
+        dashboard.id = 'adminDashboard';
+        dashboard.innerHTML = `
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold" style="color: var(--text);">Admin Dashboard</h1>
+                    <p class="text-gray-600 mt-2">Manage your school's attendance system</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stats-card card text-center">
+                        <i data-feather="users" class="h-8 w-8 mx-auto mb-2" style="color: var(--primary);"></i>
+                        <p class="text-2xl font-bold" style="color: var(--primary);">5</p>
+                        <p class="text-sm text-gray-600">Total Students</p>
+                    </div>
+                    <div class="stats-card card text-center">
+                        <i data-feather="user-check" class="h-8 w-8 mx-auto mb-2" style="color: var(--accent);"></i>
+                        <p class="text-2xl font-bold" style="color: var(--accent);">1</p>
+                        <p class="text-sm text-gray-600">Total Teachers</p>
+                    </div>
+                    <div class="stats-card card text-center">
+                        <i data-feather="calendar" class="h-8 w-8 mx-auto mb-2" style="color: var(--success);"></i>
+                        <p class="text-2xl font-bold" style="color: var(--success);">6</p>
+                        <p class="text-sm text-gray-600">Total Classes</p>
+                    </div>
+                    <div class="stats-card card text-center">
+                        <i data-feather="percent" class="h-8 w-8 mx-auto mb-2" style="color: var(--primary);"></i>
+                        <p class="text-2xl font-bold" style="color: var(--primary);">85%</p>
+                        <p class="text-sm text-gray-600">Attendance Rate</p>
+                    </div>
+                </div>
+
+                <div class="card mt-8">
+                    <h3 class="text-xl font-semibold mb-4" style="color: var(--text);">Admin Features</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-semibold mb-2">Student Management</h4>
+                            <p class="text-sm text-gray-600 mb-3">Add, edit, and manage student records</p>
+                            <button class="btn-primary" onclick="showNotification('Student management feature available!', 'success')">
+                                Manage Students
+                            </button>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-semibold mb-2">Teacher Management</h4>
+                            <p class="text-sm text-gray-600 mb-3">Add and manage teacher accounts</p>
+                            <button class="btn-primary" onclick="showNotification('Teacher management feature available!', 'success')">
+                                Manage Teachers
+                            </button>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-semibold mb-2">Attendance Reports</h4>
+                            <p class="text-sm text-gray-600 mb-3">Generate detailed attendance reports</p>
+                            <button class="btn-primary" onclick="showNotification('Reports feature available!', 'success')">
+                                View Reports
+                            </button>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <h4 class="font-semibold mb-2">Class Management</h4>
+                            <p class="text-sm text-gray-600 mb-3">Manage classes and sections</p>
+                            <button class="btn-primary" onclick="showNotification('Class management feature available!', 'success')">
+                                Manage Classes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(dashboard);
+        feather.replace();
+    }
+
+    function loadClassOptions() {
+        const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+        const classSelect = document.getElementById('teacherClassSelect');
+        
+        if (classSelect) {
+            // Clear existing options except the first one
+            classSelect.innerHTML = '<option value="">Select Class</option>';
+            
+            classes.forEach(cls => {
+                const option = document.createElement('option');
+                option.value = cls.code;
+                option.textContent = cls.name;
+                classSelect.appendChild(option);
+            });
+        }
+    }
+
+    function loadSections() {
+        const selectedClassCode = document.getElementById('teacherClassSelect').value;
+        const sectionSelect = document.getElementById('teacherSectionSelect');
+        
+        if (sectionSelect) {
+            // Clear sections
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            
+            if (selectedClassCode) {
+                const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+                const selectedClass = classes.find(c => c.code === selectedClassCode);
+                
+                if (selectedClass) {
+                    selectedClass.sections.forEach(section => {
+                        const option = document.createElement('option');
+                        option.value = section;
+                        option.textContent = `Section ${section}`;
+                        sectionSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+    }
+
+    function loadStudentsForAttendance() {
+        const classVal = document.getElementById('teacherClassSelect').value;
+        const section = document.getElementById('teacherSectionSelect').value;
+        const date = document.getElementById('attendanceDate').value;
+
+        if (!classVal || !section || !date) {
+            showError('Please select class, section, and date');
+            return;
+        }
+
+        const students = JSON.parse(localStorage.getItem('students') || '[]');
+        const filteredStudents = students.filter(s => s.class === classVal && s.section === section);
+
+        if (filteredStudents.length === 0) {
+            showError('No students found for the selected class and section');
+            return;
+        }
+
+        // Update attendance info
+        const classes = JSON.parse(localStorage.getItem('classes') || '[]');
+        const selectedClass = classes.find(c => c.code === classVal);
+        const className = selectedClass ? selectedClass.name : `Class ${classVal}`;
+        
+        document.getElementById('attendanceInfo').innerHTML = `
+            <strong>${className} - Section ${section}</strong> | 
+            Date: ${new Date(date).toLocaleDateString()} | 
+            Total Students: ${filteredStudents.length}
+        `;
+
+        document.getElementById('attendanceSection').classList.remove('hidden');
+        
+        // Mobile-friendly student cards
+        const studentsListHtml = filteredStudents.map(student => `
+            <div class="bg-white border rounded-lg p-4 shadow-sm">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-600 font-semibold text-sm">${student.roll}</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">${student.name}</p>
+                            <p class="text-sm text-gray-500">ID: ${student.id}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Attendance buttons -->
+                <div class="flex space-x-2 mb-3">
+                    <label class="flex-1">
+                        <input type="radio" name="attendance_${student.id}" value="present" class="sr-only attendance-radio" data-student-id="${student.id}">
+                        <div class="present-btn cursor-pointer text-center py-2 px-4 rounded border-2 border-gray-200 transition-all">
+                            <i data-feather="check" class="h-4 w-4 mx-auto mb-1"></i>
+                            <span class="text-sm font-medium">Present</span>
+                        </div>
+                    </label>
+                    <label class="flex-1">
+                        <input type="radio" name="attendance_${student.id}" value="absent" class="sr-only attendance-radio" data-student-id="${student.id}">
+                        <div class="absent-btn cursor-pointer text-center py-2 px-4 rounded border-2 border-gray-200 transition-all">
+                            <i data-feather="x" class="h-4 w-4 mx-auto mb-1"></i>
+                            <span class="text-sm font-medium">Absent</span>
+                        </div>
+                    </label>
+                </div>
+                
+                <!-- Remarks input -->
+                <input type="text" placeholder="Add remarks (optional)" 
+                       class="remarks-input w-full text-sm border border-gray-200 rounded px-3 py-2" 
+                       data-student-id="${student.id}">
+            </div>
+        `).join('');
+
+        document.getElementById('studentsList').innerHTML = studentsListHtml;
+        
+        // Update total count
+        document.getElementById('totalCount').textContent = filteredStudents.length;
+        updateAttendanceCounts();
+        
+        // Add click handlers for attendance buttons
+        setupAttendanceHandlers();
+        feather.replace();
+    }
+
+    function setupAttendanceHandlers() {
+        // Handle attendance button clicks
+        document.querySelectorAll('.present-btn, .absent-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const radio = this.parentElement.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Update button styles
+                const parentContainer = this.closest('.bg-white');
+                const allBtns = parentContainer.querySelectorAll('.present-btn, .absent-btn');
+                
+                allBtns.forEach(b => {
+                    b.classList.remove('border-green-500', 'bg-green-50', 'text-green-700');
+                    b.classList.remove('border-red-500', 'bg-red-50', 'text-red-700');
+                    b.classList.add('border-gray-200', 'text-gray-600');
+                });
+                
+                if (this.classList.contains('present-btn')) {
+                    this.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                    this.classList.remove('border-gray-200', 'text-gray-600');
+                } else {
+                    this.classList.add('border-red-500', 'bg-red-50', 'text-red-700');
+                    this.classList.remove('border-gray-200', 'text-gray-600');
+                }
+                
+                updateAttendanceCounts();
+            });
+        });
+    }
+
+    function updateAttendanceCounts() {
+        const presentRadios = document.querySelectorAll('input[value="present"]:checked');
+        const absentRadios = document.querySelectorAll('input[value="absent"]:checked');
+        
+        document.getElementById('presentCount').textContent = presentRadios.length;
+        document.getElementById('absentCount').textContent = absentRadios.length;
+    }
+
+    function markAllPresent() {
+        const presentRadios = document.querySelectorAll('input[type="radio"][value="present"]');
+        presentRadios.forEach(radio => {
+            radio.checked = true;
+            // Trigger visual update
+            const btn = radio.parentElement.querySelector('.present-btn');
+            if (btn) {
+                btn.click();
+            }
+        });
+        showNotification('All students marked as present', 'success');
+    }
+
+    function submitAttendance() {
+        const classVal = document.getElementById('teacherClassSelect').value;
+        const section = document.getElementById('teacherSectionSelect').value;
+        const date = document.getElementById('attendanceDate').value;
+
+        if (!classVal || !section || !date) {
+            showError('Please ensure class, section, and date are selected');
+            return;
+        }
+
+        // Collect attendance data
+        const attendanceRecords = [];
+        const attendanceInputs = document.querySelectorAll('.attendance-radio:checked');
+        
+        attendanceInputs.forEach(input => {
+            const studentId = input.getAttribute('data-student-id');
+            const remarksInput = document.querySelector(`.remarks-input[data-student-id="${studentId}"]`);
+            
+            attendanceRecords.push({
+                studentId: studentId,
+                status: input.value,
+                remarks: remarksInput ? remarksInput.value : '',
+                date: date,
+                class: classVal,
+                section: section
+            });
+        });
+
+        // Save to localStorage
+        const existingAttendance = JSON.parse(localStorage.getItem('attendance') || '{}');
+        const attendanceKey = `${date}_${classVal}_${section}`;
+        existingAttendance[attendanceKey] = attendanceRecords;
+        localStorage.setItem('attendance', JSON.stringify(existingAttendance));
+
+        showNotification(`Attendance submitted successfully for ${attendanceRecords.length} students!`, 'success');
+        
+        // Reset form
+        document.getElementById('attendanceSection').classList.add('hidden');
+        document.getElementById('teacherClassSelect').value = '';
+        document.getElementById('teacherSectionSelect').value = '';
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    function hideError() {
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        // Create notification if it doesn't exist
+        let notification = document.getElementById('notification');
+        if (!notification) {
+            notification = document.createElement('div');
+            notification.id = 'notification';
+            notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 hidden';
+            document.body.appendChild(notification);
+        }
+
+        // Set message and style
+        notification.textContent = message;
+        notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50';
+        
+        if (type === 'success') {
+            notification.classList.add('bg-green-100', 'border', 'border-green-400', 'text-green-700');
+        } else if (type === 'error') {
+            notification.classList.add('bg-red-100', 'border', 'border-red-400', 'text-red-700');
+        } else {
+            notification.classList.add('bg-blue-100', 'border', 'border-blue-400', 'text-blue-700');
+        }
+
+        // Show and auto-hide
+        notification.classList.remove('hidden');
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 3000);
+    }
+</script>
+</html>
